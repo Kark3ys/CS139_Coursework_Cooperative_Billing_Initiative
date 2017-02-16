@@ -1,0 +1,99 @@
+Specification:
+	User Registration
+		Name, Email, Password
+	User Authentication
+		Email, Password (store it with a salt and a sha1)
+	Adding Bills
+		Name, Ammount
+	Splitting Bills Between Relevant Persons
+	Settling Payment Between Persons
+	Displaying Bill Status
+		Pending/Paid, Balances
+	Notifications
+		New Bills, Money Owed, Bill Completion
+
+Site Layout
+	index.php
+		header.php
+		footer.php
+	register.php
+		registerProcess.php
+	login.php
+		loginProcess.php
+	authenticate.php
+	security.php
+	bills.php
+	newBill.php
+	viewBill.php
+	editBill.php
+	addContributor.php
+	groups.php
+	newGroup.php
+	editGroup.php
+	notifications.php
+
+Database Structure - coop.db
+	users
+		userID PK AI NN UN
+		username
+		name
+		pass
+		salt
+		email
+		createTS
+		lastlogTS
+	
+	groups
+		groupID PK AI NN UN
+		name
+		createTS
+		editTS
+	
+	groupUserRel
+		userID PK FK NN
+		groupID PK FK NN
+		perm (0=owner, 1=member) Owner can add/remove members and dissolve group
+		enabled 
+	
+	bills
+		billID PK AI NN UN
+		name
+		total
+		typeID
+		createTS
+		editTS
+		dueTS
+	
+	billTypes
+		typeID
+		name
+		icon (filepath)
+	
+	billContributors
+		billID PK FK
+		userID PK FK
+		groupID FK (Only added if a group is added to contribute to a bill)
+		perm (0=owner, 1=member) Owner adds/removes members and sets contributions
+		ammount Money
+		paid Boolean
+		recieved Boolean
+	
+	notification
+		notiID PK
+		userID PK FK
+		checked Boolean
+		addTS
+		notiTypeID FK
+	
+	notiTypes
+		notiTypeID PK
+		filler
+	
+	notiBill
+		notiID PK FK
+		billID PK FK
+	
+	notiGroup
+		notiID PK FK
+		groupID PK FK
+		
