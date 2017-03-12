@@ -42,11 +42,14 @@ if (empty($uid)) {
 		$ownerName = $temp["realname"];
 		$ownerID = $temp["userID"];
 		date_default_timezone_set("UTC");
-		if (Time() > strtotime($bill["dueTS"])) {
+		if (Time() > strToTime($bill["dueTS"])) {
 			$dateColour = ' style="background-color: #cc4b37" ';
-		} elseif (Time() - (7 * 24 * 60 * 60) > strtotime($bill["dueTS"])) {
+		} elseif (Time() + (7 * 24 * 60 * 60) > strToTime($bill["dueTS"])) {
 			$dateColour=' style="background-color: #ffae00" ';
+		} else {
+			$dateColour=' style="background-color: #1779ba" ';
 		}
+		
 		if ($bill["paid"]!=0) {
 			$paid = "Yes";
 			$paidColour = ' style="background-color: #3adb76" ';
@@ -109,8 +112,8 @@ if (empty($uid)) {
 $(function() {
 	$("#showComplete").click(function() {
 		var ch = $(this).prop("checked");
-		if (ch) $("input[name='comp'][value='true']").parent().show("slow");
-		else $("input[name='comp'][value='true']").parent().hide("slow");
+		if (ch) $("input[name='comp'][value='true']").parent().show("fast");
+		else $("input[name='comp'][value='true']").parent().hide("fast");
 	})
 })
 </script>

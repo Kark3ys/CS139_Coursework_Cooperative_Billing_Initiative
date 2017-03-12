@@ -13,13 +13,13 @@ if(!empty($email)) {
 		if(sha1($result["salt"]."--".$pass) == $result["pass"]) {
 			session_start();
 			$_SESSION["uid"] = $result["userID"];
-			header("Location:bills.php?uid=");
-			die();
+			header("Location:bills.php");
+			exit();
 		}
 	}
 	
 	header("Location:login.php?err=1");
-	die();
+	exit();
 	
 }
 ?>

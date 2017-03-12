@@ -39,8 +39,8 @@
 
         <div class="row">
           <div class="large-12 columns">
-            <div class="primary callout">
-              <p><strong>This is a twelve column section in a row.</strong> Each of these includes a div.callout element so you can see where the columns are - it's not required at all for the grid.</p>
+            <div class="primary button">
+              <p><strong>This is a twelve column section in a row.</strong> <span class="button">Each</span> of these includes a div.callout element so you can see where the columns are - it's not required at all for the grid.</p>
             </div>
           </div>
         </div>
