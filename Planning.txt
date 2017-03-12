@@ -13,16 +13,15 @@ Specification:
 		New Bills, Money Owed, Bill Completion
 
 Site Layout
-	index.php
-		header.php
-		footer.php
-	register.php
-		registerProcess.php
-	login.php
-		loginProcess.php
-	authenticate.php
-	security.php
-	bills.php
+	+index.php
+		+header.php
+		+footer.php
+	+register.php
+		+registerProcess.php
+	+login.php
+		+loginProcess.php
+	+security.php
+	+bills.php
 	newBill.php
 	viewBill.php
 	editBill.php
@@ -31,7 +30,7 @@ Site Layout
 	newGroup.php
 	viewGroup.php
 	notifications.php
-	profile.php
+	+profile.php
 
 Database Structure - coop.db
 	users

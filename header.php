@@ -13,7 +13,7 @@ $isLog = !empty($_SESSION["uid"]);
     <meta charset="utf-8">
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Foundation for Sites</title>
+    <title>Cooperative Billing Initiative</title>
     <link rel="stylesheet" href="css/foundation.css">
     <link rel="stylesheet" href="css/app.css">
 		<script src="js/jquery-3.1.1.min.js"></script>
@@ -40,13 +40,14 @@ $isLog = !empty($_SESSION["uid"]);
 						</li>
 					</ul>
 				</div>
+				<?php if ($isLog) echo '
 				<div class="top-bar-right">
 					<ul class="menu">
 						<li><a href="notifications.php">Notifications</a></li>
 						<li><a href="profile.php">Profile</a></li>
 						<li><a href="logout.php">Logout</a></li>
 					</ul>
-				</div>
+				</div>';?>
 			</div>
 	</div>
 	&nbsp;
