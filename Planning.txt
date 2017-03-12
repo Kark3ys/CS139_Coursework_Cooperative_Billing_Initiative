@@ -29,8 +29,9 @@ Site Layout
 	addContributor.php
 	groups.php
 	newGroup.php
-	editGroup.php
+	viewGroup.php
 	notifications.php
+	profile.php
 
 Database Structure - coop.db
 	users

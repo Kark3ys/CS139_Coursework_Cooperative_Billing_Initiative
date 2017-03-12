@@ -1,0 +1,119 @@
+<?php session_start();
+$uid = $_SESSION["uid"];
+if (empty($uid)) {
+	header("Location:login.php?err=2");
+	exit();
+}
+?>
+<?php require "header.php"; ?>
+<div class="columns medium-8">
+<div class="callout">
+<table id="bills">
+	<thead>
+		<tr>
+			<td>Bill Name</td>
+			<td>Due Date</td>
+			<td>Contribution</td>
+			<td>Total</td>
+			<td>Paid</td>
+			<td>Recieved</td>
+			<td>Group</td>
+			<td>Owner</td>
+		</tr>
+	</thead>
+	<tbody>
+<?php
+	$db = new Database();
+	$stmt = $db->prepare("SELECT * FROM bills
+	INNER JOIN billContributors ON bills.billID = billContributors.billID
+	INNER JOIN users ON users.userID = billContributors.userID
+	WHERE users.userID = :uid	ORDER BY bills.dueTS");
+	
+	$stmt->bindValue(":uid", $uid, SQLITE3_INTEGER);
+	$result = $stmt->execute();
+	while ($bill = $result->fetchArray()) {
+		$stmt = $db->prepare("SELECT * FROM bills
+		INNER JOIN billContributors ON billContributors.billID = bills.billID
+		INNER JOIN users ON billContributors.userID = users.userID
+		WHERE bills.billID = :bid AND billContributors.owner = 1;");
+		$stmt->bindValue(":bid", $bill["billID"], SQLITE3_INTEGER);
+		$tempresult = $stmt->execute();
+		$temp = $tempresult->fetchArray();
+		$ownerName = $temp["realname"];
+		$ownerID = $temp["userID"];
+		date_default_timezone_set("UTC");
+		if (Time() > strtotime($bill["dueTS"])) {
+			$dateColour = ' style="background-color: #cc4b37" ';
+		} elseif (Time() - (7 * 24 * 60 * 60) > strtotime($bill["dueTS"])) {
+			$dateColour=' style="background-color: #ffae00" ';
+		}
+		if ($bill["paid"]!=0) {
+			$paid = "Yes";
+			$paidColour = ' style="background-color: #3adb76" ';
+		} else {
+			$paid = "No";
+			$paidColour = ' style="background-color: #cc4b37" ';
+		}
+		
+		if ($bill["recieved"] != 0) {
+			$recived = "Yes";
+			$rColour = ' style="background-color: #3adb76" ';
+		} else {
+			$recieved = "No";
+			$rColour = ' style="background-color: #cc4b37" ';
+		}
+		
+		if ($bill["complete"] != 0) {
+			$complete = "true";
+			$rowColour = ' style="background-color: #3adb76" ';
+		} else {
+			$complete = "false";
+			$rowColour='';
+		}
+		
+		if ($bill["groupID"] != 0) {
+			$stmt = $db->prepare("SELECT name FROM groups WHERE groupID = :gid");
+			$stmt->bindValue(":gid", $bill["groupID"], SQLITE3_INTEGER);
+			$tempresult = $stmt->execute();
+			$temp = $tempresult->fetchArray();
+			$groupName = '<a href="viewGroup.php?gid='.$bill["groupID"].'">'.$temp["name"].'</a>';
+		} else {
+			$groupName = "N/A";
+		}	
+		
+		echo '<tr'.$rowColour.'><td><a href=viewBill.php?bid='.$bill["billID"].'>'.$bill["name"]
+			.'</a></td><td'.$dateColour.'>'.$bill["dueTS"].'</td><td>£'.$bill["ammount"]
+			.'</td><td>£'.$bill["total"].'</td><td'.$paidColour.'>'.$paid.'</td>
+			<td'.$rColour.'>'.$recieved.'</td><td>'.$groupName.'</td>
+			<td><a href="profile.php?uid='.$ownerID.'">'.$ownerName
+			.'</a></td><input type=hidden name="comp" value='.$complete.'></tr>';
+	}
+?>
+</tbody>
+</table>
+</div>
+</div>
+<div class="columns large-4 medium-4">
+<div class="input group">
+<form id="search">
+	<input type="text" name="searchTerm" maxlength="30" required />
+	<fieldset id="searchTypeGroup" class="callout">
+		<legend>Search By...</legend>
+		<label><input type="radio" name="searchType" value="0" />General Search</label>
+		<label><input type="radio" name="searchType" value="1" />Bill Name</label>
+		<label><input type="radio" name="searchType" value="2" />Owner Name</label>
+	</fieldset>
+</form>
+<label><input type="checkbox" id="showComplete" checked />Show Complete?</label>
+<script>
+$(function() {
+	$("#showComplete").click(function() {
+		var ch = $(this).prop("checked");
+		if (ch) $("input[name='comp'][value='true']").parent().show("slow");
+		else $("input[name='comp'][value='true']").parent().hide("slow");
+	})
+})
+</script>
+</div>
+</div>
+<?php require "footer.php"; ?>

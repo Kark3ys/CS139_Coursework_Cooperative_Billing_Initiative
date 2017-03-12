@@ -13,7 +13,7 @@ CREATE TABLE users
 (
 	userID INTEGER NOT NULL UNIQUE PRIMARY KEY AUTOINCREMENT,
 	username VARCHAR(30) NOT NULL UNIQUE,
-	name VARCHAR(30) NOT NULL,
+	realname VARCHAR(30) NOT NULL,
 	pass VARCHAR(50) NOT NULL,
 	salt VARCHAR(50) NOT NULL,
 	email VARCHAR(50) NOT NULL UNIQUE,
@@ -21,7 +21,7 @@ CREATE TABLE users
 	lastlogTS TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-INSERT INTO users(username, name, pass, salt, email)
+INSERT INTO users(username, realname, pass, salt, email)
 VALUES('SomeUserName', 'First Last', 'd2335ebb952039cdf519ef1eb4c089499d7bec68', 'ae4f281df5a5d0ff3cad6371f76d5c29b6d953ec', 'some@gmail.com'),
 	('AnotherUser', 'Random Name', 'd2335ebb952039cdf519ef1eb4c089499d7bec68', 'ae4f281df5a5d0ff3cad6371f76d5c29b6d953ec', 'another@yahoo.com'),
 	('Idunno', 'John Smith', 'd2335ebb952039cdf519ef1eb4c089499d7bec68', 'ae4f281df5a5d0ff3cad6371f76d5c29b6d953ec', 'dunno@microsoft.live.co.uk'),
@@ -65,6 +65,7 @@ CREATE TABLE bills
 	createTS TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	editTS TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 	dueTS TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+	complete BOOLEAN NOT NULL DEFAULT FALSE,
 	FOREIGN KEY(typeID) REFERENCES billTypes(typeID)
 );
 
@@ -72,6 +73,9 @@ INSERT INTO bills(name, total, typeID)
 VALUES ('Water Bill', 55.6, 3),
 	('Gas Bill', 20.5, 2),
 	('Taxis for last night', 20, 4);
+	
+INSERT INTO bills(name, total, complete)
+VALUES ('Lemon Tea', 5, 1);
 
 CREATE TABLE billTypes
 (
@@ -92,7 +96,7 @@ CREATE TABLE billContributors
 	owner BOOLEAN NOT NULL DEFAULT FALSE,
 	ammount DOUBLE NOT NULL,
 	paid BOOLEAN NOT NULL DEFAULT FALSE,
-	recieveed BOOLEAN NOT NULL DEFAULT FALSE,
+	recieved BOOLEAN NOT NULL DEFAULT FALSE,
 	PRIMARY KEY(billID, userID),
 	FOREIGN KEY(billID) REFERENCES bills(billID),
 	FOREIGN KEY(userID) REFERENCES users(userID),
@@ -101,7 +105,7 @@ CREATE TABLE billContributors
 
 INSERT INTO billContributors(billID, userID, groupID, owner, ammount)
 VALUES (1, 1, 1, 1, 50), (1, 2, 1, 0, 5.6), (2, 3, 0, 1, 10), (2, 4, 0, 0, 10.5),
-	(3, 1, 0, 1, 20);
+	(3, 1, 0, 1, 10	), (4, 1, 0, 1, 5);
 	
 CREATE TABLE notifications
 (
