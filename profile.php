@@ -1,7 +1,7 @@
 <?php require "header.php";?>
 <?php 
 	if (!empty($_GET["uid"])) $uid = $_GET["uid"];
-	if (empty($uid) || !is_int($uid)) {
+	elseif (empty($uid) || !is_int($uid)) {
 		if ($isLog) $uid = $_SESSION["uid"];
 		else $uid = 0;
 	}

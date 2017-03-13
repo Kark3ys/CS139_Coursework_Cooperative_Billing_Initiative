@@ -8,6 +8,7 @@ DROP TABLE notifications;
 DROP TABLE notiTypes;
 DROP TABLE notiBill;
 DROP TABLE notiGroup;
+DROP TABLE notiUser;
 
 CREATE TABLE users
 (
@@ -93,7 +94,7 @@ CREATE TABLE billContributors
 	userID INTEGER NOT NULL,
 	groupID INTEGER DEFAULT 0,
 	owner BOOLEAN NOT NULL DEFAULT FALSE,
-	ammount DOUBLE NOT NULL,
+	ammount DOUBLE NOT NULL DEFAULT 0,
 	paid BOOLEAN NOT NULL DEFAULT FALSE,
 	recieved BOOLEAN NOT NULL DEFAULT FALSE,
 	PRIMARY KEY(billID, userID),
@@ -103,8 +104,10 @@ CREATE TABLE billContributors
 );
 
 INSERT INTO billContributors(billID, userID, groupID, owner, ammount)
-VALUES (1, 1, 1, 1, 50), (1, 2, 1, 0, 5.6), (2, 3, 0, 1, 10), (2, 4, 0, 0, 10.5),
+VALUES (1, 1, 1, 1, 50), (1, 2, 1, 0, 5.6), (2, 3, 2, 1, 10), (2, 4, 0, 0, 10.5),
 	(3, 1, 0, 1, 10	), (4, 1, 0, 1, 5);
+INSERT INTO billContributors(billID, userID, ammount, paid, recieved)
+VALUES (2, 1, 2.5, 1, 1);
 	
 CREATE TABLE notifications
 (
@@ -118,9 +121,6 @@ CREATE TABLE notifications
 	FOREIGN KEY(typeID) REFERENCES notiTypes(typeID)
 );
 
-INSERT INTO notifications(userID, typeID)
-VALUES (1,2), (1,7), (1,10);
-
 CREATE TABLE notiTypes
 (
 	typeID INTEGER NOT NULL UNIQUE PRIMARY KEY AUTOINCREMENT,
@@ -129,11 +129,12 @@ CREATE TABLE notiTypes
 );
 
 INSERT INTO notiTypes(message)
-VALUES ('Generic'), ('Invited to Group'), ('Joined your Group'),
+VALUES ('Generic'), ('Invited to Group'), ('Invite Accepted'),
 	('Left your Group'), ('Removed from Group'), ('Group Dissolved'),
 	('Invited to Contribute'), ('Left Contribution'), ('Contribution Sent'),
 	('Contribution Recieved'), ('Bill Complete'), ('Bill Dissolved'), 
-	('Bill Edited');
+	('Bill Edited'), ('Contribution Updated'), ('Invited to Contribute as Part of Group'), 
+	('Invite Rejected'), ('Group Invite Requested');
 
 CREATE TABLE notiBill
 (
@@ -143,9 +144,6 @@ CREATE TABLE notiBill
 	FOREIGN KEY(billID) REFERENCES bills(billID)
 );
 
-INSERT INTO notiBill
-VALUES (2,3), (3,1);
-
 CREATE TABLE notiGroup
 (
 	notiID INTEGER NOT NULL UNIQUE PRIMARY KEY,
@@ -154,5 +152,10 @@ CREATE TABLE notiGroup
 	FOREIGN KEY(groupID) REFERENCES groups(groupID)
 );
 
-INSERT INTO notiGroup
-VALUES (1,3);
+CREATE TABLE notiUser
+(
+	notiID INTEGER NOT NULL UNIQUE PRIMARY KEY,
+	secondUserID INTEGER NOT NULL,
+	FOREIGN KEY(notiID) REFERENCES notifications(notiID),
+	FOREIGN KEY(secondUserID) REFERENCES users(userID)
+);

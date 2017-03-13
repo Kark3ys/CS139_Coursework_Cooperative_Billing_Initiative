@@ -22,7 +22,7 @@ Site Layout
 		+loginProcess.php
 	+security.php
 	+bills.php
-	newBill.php
+	+newBill.php
 	viewBill.php
 	editBill.php
 	addContributor.php

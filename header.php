@@ -6,6 +6,14 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 require_once 'database.php';
 $isLog = !empty($_SESSION["uid"]);
+if ($isLog) {
+	$db = new Database();
+	$stmt = $db->prepare("SELECT realname FROM users WHERE userID = :uid");
+	$stmt->bindValue(":uid", $_SESSION["uid"], SQLITE3_INTEGER);
+	$result = $stmt->execute();
+	$temp = $result->fetchArray();
+	$name = $temp["realname"];
+}
 ?>
 <!DOCTYPE html>
 <html class="no-js" lang="en" dir="ltr">
@@ -41,10 +49,25 @@ $isLog = !empty($_SESSION["uid"]);
 					</ul>
 				</div>
 				<?php if ($isLog) echo '
+				<input type="hidden" id="seshUser" value="'.$_SESSION["uid"].'" />
+				<script>
+				$(function() {
+					var id = $("#seshUser").attr("value");
+					function checkNoti() {
+						$.post("getNotifications.php", {uid: id}, function(data, status) {
+								$("#notinumber").html(data);
+							});
+						console.log("Checked");
+					}
+					checkNoti();
+					setInterval(checkNoti, 2000);
+				});
+					
+				</script>
 				<div class="top-bar-right">
 					<ul class="menu">
-						<li><a href="notifications.php">Notifications</a></li>
-						<li><a href="profile.php">Profile</a></li>
+						<li><a href="notifications.php">Notifications (<span id="notinumber"></span>)</a></li>
+						<li><a href="profile.php">'.$name.'</a></li>
 						<li><a href="logout.php">Logout</a></li>
 					</ul>
 				</div>';?>

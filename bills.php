@@ -85,7 +85,7 @@ if (empty($uid)) {
 		}	
 		
 		echo '<tr'.$rowColour.'><td><a href=viewBill.php?bid='.$bill["billID"].'>'.$bill["name"]
-			.'</a></td><td'.$dateColour.'>'.$bill["dueTS"].'</td><td>£'.$bill["ammount"]
+			.'</a></td><td'.$dateColour.'>'.$bill["dueTS"].'</td><td>£'.number_format($bill["ammount"],2)
 			.'</td><td>£'.$bill["total"].'</td><td'.$paidColour.'>'.$paid.'</td>
 			<td'.$rColour.'>'.$recieved.'</td><td>'.$groupName.'</td>
 			<td><a href="profile.php?uid='.$ownerID.'">'.$ownerName

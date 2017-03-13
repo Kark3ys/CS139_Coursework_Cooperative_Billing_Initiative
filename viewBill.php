@@ -52,7 +52,7 @@ if (empty($uid)) {
 	$ownerData = $result->fetchArray();
 	echo '
 	<div class="column large-4">
-		<h2>'.$complete.$billData["name"].'<br /><small>'.$billData["typename"].'</small></h2>
+		'.$complete.'<h2>'.$billData["name"].'<br /><small>'.$billData["typename"].'</small></h2>
 		<div class="callout">
 			<h3>Total: £'.number_format($billData["total"], 2).'</h3>
 			<h3>Due Date: '.$billData["dueTS"].'</h3>
@@ -62,7 +62,9 @@ if (empty($uid)) {
 			<tr><td>Last Modified</td><td>'.$billData["editTS"].'</td></tr></table>
 			<hr />
 			<div id="controlPanel">
-				Contribution: £'.$billData["ammount"].'<br />
+				<input type="hidden" id="curBill" value="'.$bid.'" />
+				<input type="hidden" id="editBill" value="'.$editBill.'" />
+				Contribution: £<span id="selfCon">'.$billData["ammount"].'</span><br />
 				Paid: <input type="checkbox" name="selfPaid" ';
 	if ($billData["paid"] != 0) echo 'checked ';
 	if ($billData["recieved"] != 0) echo 'disabled ';
@@ -97,24 +99,26 @@ if (empty($uid)) {
 				echo '
 					</tbody>
 					</table>
-					Group Contribution: £<span id="gc-'.$lgid.'">0</span>';
+					Group Contribution: £<span class="groupContributionTally" id="gc-'.$lgid.'">0</span>';
 				if ($editBill) {
+					echo ' 
+					<hr />					
+					<button class="saveConChanges button">Save Contribution Changes</button><br />
+					<span class="saveConChangeMsg"></span>';
 					if ($lgid == 0) echo '
-					<hr />
 					Add New Contributors:
-					<form id="addcGen">';
+					<div class="addcGen">';
 					else echo '
-					<hr />
 					Add From Group:
 					<button id="saveChanges" class="button success">
-					<form id="addG">';
+					<div class="addG">';
 					
 					echo '
 						<input type="text" name="username" pattern="[a-zA-Z0-9]+" maxlength="30" required />
-						<button type="submit" class="button">Add Username</button>
+						<button class="button">Add Username</button>
 						<input type="hidden" value="'.$lgid.'" name="gid" />
 						<span class="errZone"></span>
-					</form>';
+					</div>';
 				}
 				echo '
 				</div>
@@ -130,9 +134,9 @@ if (empty($uid)) {
 						<tr>
 						<td>Name</td>
 						<td>Contribution</td>
-						<td>Paid?</td>';
+						<td>Paid?</td>
+						<td>Recieved?</td>';
 			if ($editBill) echo '
-						<td>Recieved?</td>
 						<td>Remove?</td>';					
 			echo '
 						</tr>
@@ -144,18 +148,32 @@ if (empty($uid)) {
 		else $paid = "No";
 		$ammount = number_format($user["ammount"],2);
 		echo '
-						<tr id="u'.$user["userID"].'">
+						<tr id="'.$user["userID"].'">
 						<td><a href="profile.php?uid='.$user["userID"].'">'.$user["realname"].'</a></td><td>';
 		if ($editBill) echo '
 						<input type="number" name="ammount" step="0.01" min="0" required value="'.$ammount.'"/>';
 		else echo '
-						<input type="hidden" value="'.$ammount.' name="ammount"/>£'.$ammount;
+						<input type="hidden" value="'.$ammount.'" name="ammount"/>£'.$ammount;
 		echo '
 						</td><td>'.$paid.'</td>';
 		
-		if ($editBill) echo '
-						<td><input type="checkbox" name="recieve" /></td>
-						<td><button class="button alert" name="remove">X</button></td>';
+		if ($editBill) {
+			echo '
+						<td><input type="checkbox" name="recieve" ';
+			if ($user["recieved"] != 0) echo 'checked ';
+			if ($user["paid"] == 0) echo 'disabled ';
+			echo '/></td>
+						<td>';
+			if ($user["userID"] != $_SESSION["uid"]) echo'
+							<button class="button alert" name="remove">X</button>';
+			echo'
+						</td>';
+		} else {
+			echo '
+						<td>';
+			if ($user["recieved"] != 0) echo 'Yes'; else echo 'No';
+			echo '</td>';
+		}
 		echo '
 						</tr>';
 	}
@@ -167,20 +185,21 @@ if (empty($uid)) {
 	if ($editBill) {
 		echo '
 					<hr />
-					<button id="saveConChanges" class="button">Save Contribution Changes</button>';
+					<button class="saveConChanges button">Save Contribution Changes</button><br />
+					<span class="saveConChangeMsg"></span>';
 		if ($lgid == 0) echo '
 					Add New Contributors:
-					<form id="addcGen">';
+					<div class="addcGen">';
 		else echo '
 					Add From Group:
-					<form id="addG">';
+					<div class="addG">';
 					
 		echo '
 						<input type="text" name="username" pattern="[a-zA-Z0-9]+" maxlength="30" required />
 						<button type="submit" class="button">Add Username</button>
 						<input type="hidden" value="'.$lgid.'" name="gid" />
-						<span class="errZone"></span>
-					</form>';
+						<span class="errZone" style="display:none"></span>
+					</div>';
 	}
 	echo '
 				</div>
@@ -200,6 +219,9 @@ function updateGCT() {
 	});
 }
 $(function() {
+	var uid = $("#seshUser").attr("value");
+	var bid = $("#curBill").attr("value");
+	var canEdit = $("#editBill").attr("value");
 	updateGCT();
 	$("#groupCollate").on("change", "ul li div table tbody tr td input[name='ammount']", function() {
 		updateGCT();
@@ -209,6 +231,80 @@ $(function() {
 	});
 	$("#dbno").click(function() {
 		$(".dbbs").hide("fast");
+	});
+	$("#groupCollate").on("click", "ul li .saveConChanges", function() {
+		var changes = []
+		$(this).parent().find("input[name='ammount']").each(function () {
+			if (parseFloat($(this).val()) != parseFloat($(this).attr("value"))) 
+				changes.push({val: $(this).val(), id: $(this).parent().parent().attr("id"), bill: bid});
+		});
+		console.log("ready");
+		changes.forEach(function(item) {
+			
+			console.log("start");
+			if (item) {
+				console.log("val: " + item.val + " id: " + item.id);
+				if (uid == item.id) {
+					$("#selfCon").html(parseFloat(item.val).toFixed(2));
+					console.log("self found");
+				}
+				$.post("updateContribution.php",
+				{uid:item.id, ammount:item.val, bid: item.bill},
+				function (data, status) {
+					$(".saveConChangeMsg").html("Changes Saved");
+					$(".saveConChangeMsg").show("slow");
+					setTimeout(function() { $(".saveConChangeMsg").hide("slow")}, 2000);
+					console.log(data);
+				}).fail(function() { alert("Fail")});
+			}
+		});		
+	});
+	$(".addcGen button").click(function() {
+		var user = $(this).parent().find("input[type='text']").val();
+		var errZone = $(this).parent().find(".errZone");
+		var groupTable = $(this).parent().parent().find("table tbody");
+		$.post("addGeneralContributor.php", {name: user, bid: bid, gid: 0}, function(d) {
+			var data = JSON.parse(d);
+			if (data.uid == 0) 
+				errZone.html("User not found");
+			else 
+				if (data.invited != 0)
+					errZone.html("User already invited");
+				else
+					if (data.already != 0) 
+						errZone.html("User already contributing");
+					else 
+						errZone.html("User Found, Notifications Sent");
+			
+			errZone.show("slow");
+			setTimeout(function() { errZone.hide("slow")}, 2000);
+		}).fail(function() { alert("Fail")});
+	});
+	
+	$(".addG button").click(function() {
+		var user = $(this).parent().find("input[type='text']").val();
+		var errZone = $(this).parent().find(".errZone");
+		var groupTable = $(this).parent().parent().find("table tbody");
+		var gid = $(this).parent().find("input[name='gid']").val();
+		$.post("addGeneralContributor.php", {name: user, bid: bid, gid: gid}, function(d) {
+			var data = JSON.parse(d);
+			if (data.uid == 0) 
+				errZone.html("User not found");
+			else 
+				if (data.invited != 0)
+					errZone.html("User already invited");
+				else
+					if (data.already != 0) 
+						errZone.html("User already contributing");
+					else 
+						if (data.groupFind == 0)
+							errZone.html("User not part of this group.");
+						else
+							errZone.html("User Found, Notifications Sent");
+
+			errZone.show("slow");
+			setTimeout(function() { errZone.hide("slow")}, 2000);
+		}).fail(function() { alert("Fail")});
 	});
 });
 		

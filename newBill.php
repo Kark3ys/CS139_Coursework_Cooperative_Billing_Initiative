@@ -14,7 +14,7 @@ if (empty($uid)) {
 		$db = new Database();
 		$result = $db->query("SELECT * FROM billTypes");
 		while ($item = $result->fetchArray()) {
-			echo '<option value="'.$item["typeID"].'">'.$item["name"].'</option>';
+			echo '<option value="'.$item["typeID"].'">'.$item["typename"].'</option>';
 		}
 	?>
 	</select></label><br />
