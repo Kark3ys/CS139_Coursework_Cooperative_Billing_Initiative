@@ -1,6 +1,7 @@
 <?php
 require 'database.php';
 require 'security.php';
+require 'generalNotificationFuncs.php';
 $username = h($_POST["name"]);
 $bid = $_POST["bid"];
 $gid = $_POST["gid"];
@@ -55,16 +56,9 @@ if (!empty($username)) {
 					else $stmt->bindValue(":type", 7, SQLITE3_INTEGER);
 					$stmt->execute();
 					$liid = $db->lastInsertRowID();
-					$stmt = $db->prepare("INSERT INTO notiBill(notiID, billID) VALUES(:liid, :bid)");
-					$stmt->bindValue(":liid", $liid, SQLITE3_INTEGER);
-					$stmt->bindValue(":bid", $bid, SQLITE3_INTEGER);
-					$stmt->execute();
-					if ($gid != 0) {
-						$stmt = $db->prepare("INSERT INTO notiGroup(notiID, groupID) VALUES(:liid, :gid)");
-						$stmt->bindValue(":liid", $liid, SQLITE3_INTEGER);
-						$stmt->bindValue(":gid", $gid, SQLITE3_INTEGER);
-						$stmt->execute();
-					}
+					notiLumpBill($db, $liid, $bid);
+					if ($gid != 0)
+						notiLumpGroup($db, $liid, $gid);
 				}
 			} else {
 				$retArray['invited'] = 1;

@@ -12,10 +12,18 @@
 			<div class="columns medium-8">
 			<p>Enter your login details to proceed to the site.</p>
 				<?php 
-				if(!empty($_GET["err"])){
+				if(!empty($_GET["err"]) && is_numeric($_GET["err"])){
 					echo '<div class="callout alert">';
-					if($_GET["err"] == 1) echo "Email/Password combination invalid.<br />";
-					if($_GET["err"] == 2) echo "Must be logged in.<br />";
+					switch ($_GET["err"]) {
+					case 1:
+						echo "Email/Password combination invalid.<br />";
+					break;
+					case 2:
+						echo "Must be logged in.<br />";
+					break;
+					default:
+						echo "Generic Error";					
+					}
 					echo '</div>';
 				}
 				?>

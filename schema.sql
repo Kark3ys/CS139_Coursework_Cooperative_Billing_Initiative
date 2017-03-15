@@ -47,14 +47,13 @@ CREATE TABLE groupUserRel
 	userID INTEGER NOT NULL,
 	groupID INTEGER NOT NULL,
 	owner BOOLEAN NOT NULL DEFAULT FALSE, /* 0=member, 1=owner */
-	joined BOOLEAN NOT NULL DEFAULT FALSE, /* Users only added to group if they accept the invitation. */
 	PRIMARY KEY(userID, groupID),
 	FOREIGN KEY(userID) REFERENCES users(userID),
 	FOREIGN KEY(groupID) REFERENCES groups(groupID)
 );
 
-INSERT INTO groupUserRel(userID, groupID, owner, joined)
-VALUES (1,1,1,1), (1,2,0,1), (2,2,0,1), (2,1,0,1), (3,2,1,1), (4,3,1,1);
+INSERT INTO groupUserRel(userID, groupID, owner)
+VALUES (1,1,1), (1,2,0), (2,2,0), (2,1,0), (3,2,1), (4,3,1);
 
 CREATE TABLE bills
 (
@@ -132,9 +131,10 @@ INSERT INTO notiTypes(message)
 VALUES ('Generic'), ('Invited to Group'), ('Invite Accepted'),
 	('Left your Group'), ('Removed from Group'), ('Group Dissolved'),
 	('Invited to Contribute'), ('Left Contribution'), ('Contribution Sent'),
-	('Contribution Recieved'), ('Bill Complete'), ('Bill Dissolved'), 
+	('Contribution Recieved'), ('Bill Marked Complete'), ('Bill Dissolved'), 
 	('Bill Edited'), ('Contribution Updated'), ('Invited to Contribute as Part of Group'), 
-	('Invite Rejected'), ('Group Invite Requested');
+	('Invite Rejected'), ('Group Invite Requested'), ('Contribution Retracted'),
+	('Bill Marked Incomplete'), ('Removed from Bill');
 
 CREATE TABLE notiBill
 (

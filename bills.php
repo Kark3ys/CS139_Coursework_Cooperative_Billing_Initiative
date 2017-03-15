@@ -6,8 +6,32 @@ if (empty($uid)) {
 }
 ?>
 <?php require "header.php"; ?>
+<?php
+if(!empty($_GET["err"]) && is_numeric($_GET["err"])) {
+	echo '
+<div class="row">
+	<div class="columns large-12">
+		<div class="callout alert">';
+	switch ($_GET["err"]) {
+		case 1:
+			echo 'Bill has been deleted by owner';
+		break;
+		case 2:
+			echo 'You left the bill.';
+		break;
+		default:
+			echo 'Generic Error';
+	}
+	echo '
+		</div>
+	</div>
+</div>
+<div class="row">';
+}
+?>
 <div class="columns medium-8">
 <div class="callout">
+<div class="table-scroll">
 <table id="bills">
 	<thead>
 		<tr>
@@ -59,7 +83,7 @@ if (empty($uid)) {
 		}
 		
 		if ($bill["recieved"] != 0) {
-			$recived = "Yes";
+			$recieved = "Yes";
 			$rColour = ' style="background-color: #3adb76" ';
 		} else {
 			$recieved = "No";
@@ -86,7 +110,7 @@ if (empty($uid)) {
 		
 		echo '<tr'.$rowColour.'><td><a href=viewBill.php?bid='.$bill["billID"].'>'.$bill["name"]
 			.'</a></td><td'.$dateColour.'>'.$bill["dueTS"].'</td><td>£'.number_format($bill["ammount"],2)
-			.'</td><td>£'.$bill["total"].'</td><td'.$paidColour.'>'.$paid.'</td>
+			.'</td><td>£'.number_format($bill["total"],2).'</td><td'.$paidColour.'>'.$paid.'</td>
 			<td'.$rColour.'>'.$recieved.'</td><td>'.$groupName.'</td>
 			<td><a href="profile.php?uid='.$ownerID.'">'.$ownerName
 			.'</a></td><input type=hidden name="comp" value='.$complete.'></tr>';
@@ -94,6 +118,7 @@ if (empty($uid)) {
 ?>
 </tbody>
 </table>
+</div>
 </div>
 </div>
 <div class="columns large-4 medium-4">

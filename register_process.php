@@ -30,7 +30,7 @@ if(!empty($user)) {
 		header("Location:register.php?err=2");
 		exit();
 	}
-	$pass='A'; /*Take this out later*/
+	//$pass='A'; /*Take this out later*/
 	$salt = sha1(time());
 	$encPass = sha1($salt."--".$pass);
 	$stmt = $db->prepare("INSERT INTO users(username, realname, pass, salt, email)

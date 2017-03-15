@@ -32,7 +32,7 @@ if ($isLog) {
 			<div class="top-bar">
 				<div class="top-bar-left">
 					<ul class="dropdown menu" data-dropdown-menu>
-						<li class="menu-text"><a href="index.php">Cooperatie Testing Initiative</a></li>
+						<li class="menu-text"><a href="index.php">Cooperatvie Billing Initiative</a></li>
 						<?php if (!$isLog) echo '<li><a href="login.php#login">Login/Register</a></li>';?>
 						<li>
 							<a href="bills.php">Bills</a>
@@ -57,7 +57,6 @@ if ($isLog) {
 						$.post("getNotifications.php", {uid: id}, function(data, status) {
 								$("#notinumber").html(data);
 							});
-						console.log("Checked");
 					}
 					checkNoti();
 					setInterval(checkNoti, 2000);

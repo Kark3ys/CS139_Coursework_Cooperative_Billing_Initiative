@@ -23,9 +23,7 @@ Site Layout
 	+security.php
 	+bills.php
 	+newBill.php
-	viewBill.php
-	editBill.php
-	addContributor.php
+	+viewBill.php
 	groups.php
 	newGroup.php
 	viewGroup.php

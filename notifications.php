@@ -7,7 +7,7 @@ if (empty($uid)) {
 ?>
 <?php include "header.php"; ?>
 <label>Show Read? <input type="checkbox" id="showChecked" checked /></label>
-<table id="notifications">
+<table id="notifications" class="unstriped hover">
 	<thead>
 		<tr>
 			<td>Notification</td>
@@ -45,7 +45,9 @@ if (empty($uid)) {
 			<input type="hidden" name="gid" value="'.$gid.'">
 			<input type="hidden" name="suid" value="'.$suid.'">
 			<input type="hidden" name="nType" value="'.$nType.'">
-			<td>'.$noti["message"].'</td>
+			<td>'.$noti["message"];
+		if (!empty($noti["custmsg"])) echo '<br />'.$noti["custmsg"];
+		echo '</td>
 			<td>Bill: ';
 		if (!empty($bid)) {
 			$stmt = $db->prepare("SELECT name FROM bills WHERE billID = :bid");
@@ -80,7 +82,7 @@ if (empty($uid)) {
 			$tempResult = $stmt->execute();
 			$temp = $tempResult->fetchArray();
 			$secName = $temp["realname"];
-			echo '<a href="profile.php?gid='.$uid.'">'.$secName.'</a>';
+			echo '<a href="profile.php?uid='.$suid.'">'.$secName.'</a>';
 		} else {
 			echo 'N/A';
 		}
@@ -103,12 +105,13 @@ if (empty($uid)) {
 	</tbody>
 </table>
 <script>
+function showCheck() {
+	var ch = $("#showChecked").prop("checked");
+	if (ch) $("input[name='comp'][value='true']").parent().show("fast");
+	else $("input[name='comp'][value='true']").parent().hide("fast");
+}
 $(function() {
-	$("#showChecked").click(function() {
-		var ch = $(this).prop("checked");
-		if (ch) $("input[name='comp'][value='true']").parent().show("fast");
-		else $("input[name='comp'][value='true']").parent().hide("fast");
-	});
+	$("#showChecked").click(showCheck);
 	
 	$(".markChecked").click(function() {
 		notiRow = $(this).parent().parent();
@@ -132,16 +135,16 @@ $(function() {
 		notiID = notiRow.attr("id");
 		if (notiComp.attr("value") == "false") {
 			bid = notiRow.find("input[name='bid']").attr("value");
-			gid = notiRow.find("input[name='bid']").attr("value");
-			suid = notiRow.find("input[name='bid']").attr("value");
+			gid = notiRow.find("input[name='gid']").attr("value");
+			suid = notiRow.find("input[name='suid']").attr("value");
 			nType = notiRow.find("input[name='nType']").attr("value");
 			console.log(nType);
 			notiRow.css("background-color", "#cacaca");
 			notiComp.attr("value", "true");
 			$.post("handleNotification.php", 
 				{nid: notiID, nType: nType, nReply: nReply, bid: bid, gid: gid, suid: suid},
-				function() {
-					console.log("Done");
+				function(d) {
+					console.log(d);
 				});
 		}
 	});
