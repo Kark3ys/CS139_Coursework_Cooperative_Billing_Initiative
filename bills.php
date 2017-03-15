@@ -155,62 +155,52 @@ if(!empty($_GET["err"]) && is_numeric($_GET["err"])) {
 <script>
 function updateSearch() {
 	var search = $("#searchTerm").val();
-	if (search != '') {
-		var searchType = parseInt($("input[name='searchType']:checked").val());
-		var tdCheck = '';
-		switch (searchType) {
-			case 1: tdCheck = '.ownerName';
-			break;
-			case 2: tdCheck = '.groupName';
-			break;
-			default: tdCheck = '.billName';
-		}
-		$("table tbody tr td"+tdCheck+":not(:contains('"+search+"'))").parent().hide("fast");
-		$("table tbody tr td"+tdCheck+":contains('"+search+"')").parent().show("fast");
-	} else {
-		$("table tbody tr").show("fast");
+	var rows = $("tbody tr");
+	var searchType = parseInt($("input[name='searchType']:checked").val());
+	var tdCheck = '';
+	switch (searchType) {
+		case 1: tdCheck = '.ownerName';
+		break;
+		case 2: tdCheck = '.groupName';
+		break;
+		default: tdCheck = '.billName';
 	}
+	rows.each(function() {
+		row = $(this);
+		console.log(row);
+		var showRow = true;
+		if (search)
+			showRow = (showRow && row.find("td"+tdCheck+":contains('"+search+"')").length) ? true: false;
+		if (!($("#showComplete").prop("checked")))
+			showRow = (showRow && row.find("input[name='comp'][value='false']").length) ? true: false;
+		
+		console.log(parseInt($("input[name='showPaid']:checked").val()));
+		switch (parseInt($("input[name='showPaid']:checked").val())) {
+			case 1: showRow = (showRow && row.find("input[name='paid'][value='1']").length) ? true: false;
+			break;
+			case 2: showRow = (showRow && row.find("input[name='paid'][value='0']").length) ? true: false;
+			break;
+		}
+		
+		console.log(parseInt($("input[name='showRecieved']:checked").val()));
+		switch (parseInt($("input[name='showRecieved']:checked").val())) {
+			case 1: showRow = (showRow && row.find("input[name='recieved'][value='1']").length) ? true: false;
+			break;
+			case 2: showRow = (showRow && row.find("input[name='recieved'][value='0']").length) ? true: false;
+			break;
+		}
+		console.log(showRow);
+		if (showRow) row.show("fast"); else row.hide("fast");
+	});
 }
 $(function() {
-	$("#showComplete").click(function() {
-		var ch = $(this).prop("checked");
-		if (ch) $("input[name='comp'][value='true']").parent().show("fast");
-		else $("input[name='comp'][value='true']").parent().hide("fast");
-	})
+	$("#showComplete").click(updateSearch)
 	
 	$("#searchTerm").on("click change keyup",updateSearch);
 	$("input[name='searchType']").change(updateSearch);
 	
-	$("input[name='showPaid']").change(function() {
-		switch (parseInt($(this).val())) {
-			case 0: $("table tbody tr").show("fast");
-			break;
-			case 1: 
-				$("input[name='paid'][value='1']").parent().show("fast");
-				$("input[name='paid'][value='0']").parent().hide("fast");
-			break;
-			case 2: 
-				$("input[name='paid'][value='1']").parent().hide("fast");
-				$("input[name='paid'][value='0']").parent().show("fast");
-			break;
-		}
-	});
-	$("input[name='showRecieved']").change(function() {
-		switch (parseInt($(this).val())) {
-			case 0: $("table tbody tr").show("fast");
-			break;
-			case 1: 
-				$("input[name='recieved'][value='1']").parent().show("fast");
-				$("input[name='recieved'][value='0']").parent().hide("fast");
-			break;
-			case 2: 
-				$("input[name='recieved'][value='1']").parent().hide("fast");
-				$("input[name='recieved'][value='0']").parent().show("fast");
-			break;
-		}
-	});
-	$("input[name='showRecieved']").change(function() {
-	});
+	$("input[name='showPaid']").change(updateSearch);
+	$("input[name='showRecieved']").change(updateSearch);
 })
 </script>
 </div>
