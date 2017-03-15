@@ -52,7 +52,7 @@
 					<label for="username">Username: </label>
 					<input type="text" name="username" pattern="[a-zA-Z0-9]+" maxlength="30" required />
 					<label for="name">Name: </label>
-					<input type="text" name="name" pattern="[a-zA-Z0-9]+" maxlength="30" required />
+					<input type="text" name="name" pattern="[a-zA-Z0-9 ]+" maxlength="30" required />
 					<?php if(!empty($_GET) && $_GET["err"] == 2) echo "<div class='callout alert'>Email Already Registered</div>";?><br />
 					<label for="email">E-Mail Address: </label>
 					<input type="email" name="email" maxlength="50" required />

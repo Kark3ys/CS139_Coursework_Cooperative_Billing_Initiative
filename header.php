@@ -2,8 +2,6 @@
 if(!isset($_SESSION)) {
 	session_start();
 }
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
 require_once 'database.php';
 $isLog = !empty($_SESSION["uid"]);
 if ($isLog) {
@@ -66,7 +64,7 @@ if ($isLog) {
 				<div class="top-bar-right">
 					<ul class="menu">
 						<li><a href="notifications.php">Notifications (<span id="notinumber"></span>)</a></li>
-						<li><a href="profile.php">'.$name.'</a></li>
+						<li><a href="profile.php?uid='.$_SESSION["uid"].'">'.$name.'</a></li>
 						<li><a href="logout.php">Logout</a></li>
 					</ul>
 				</div>';?>

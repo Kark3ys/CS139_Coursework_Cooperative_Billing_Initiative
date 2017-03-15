@@ -20,7 +20,7 @@
 				<li class="accordion-item is-active" data-accordion-item>
 					<a href="#" class="accordion-title">'.$userData["realname"].'</a>
 					<div class="accordion-content" data-tab-content>
-						Name: '.$userData["realname"].'<br />
+						Name: <a href="profile.php?uid='.$uid.'">'.$userData["realname"].'</a><br />
 						Username: '.$userData["username"].'<br />
 					</div>
 				</li>

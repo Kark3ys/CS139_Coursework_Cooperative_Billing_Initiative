@@ -108,12 +108,14 @@ if(!empty($_GET["err"]) && is_numeric($_GET["err"])) {
 			$groupName = "N/A";
 		}	
 		
-		echo '<tr'.$rowColour.'><td><a href=viewBill.php?bid='.$bill["billID"].'>'.$bill["name"]
+		echo '<tr'.$rowColour.'><td class="billName"><a href=viewBill.php?bid='.$bill["billID"].'>'.$bill["name"]
 			.'</a></td><td'.$dateColour.'>'.$bill["dueTS"].'</td><td>£'.number_format($bill["ammount"],2)
 			.'</td><td>£'.number_format($bill["total"],2).'</td><td'.$paidColour.'>'.$paid.'</td>
-			<td'.$rColour.'>'.$recieved.'</td><td>'.$groupName.'</td>
-			<td><a href="profile.php?uid='.$ownerID.'">'.$ownerName
-			.'</a></td><input type=hidden name="comp" value='.$complete.'></tr>';
+			<td'.$rColour.'>'.$recieved.'</td><td class="groupName">'.$groupName.'</td>
+			<td class="ownerName"><a href="profile.php?uid='.$ownerID.'">'.$ownerName
+			.'</a></td><input type="hidden" name="comp" value='.$complete.'>
+			<input type="hidden" name="paid" value="'.$bill["paid"].'">
+			<input type="hidden" name="recieved" value="'.$bill["recieved"].'"></tr>';
 	}
 ?>
 </tbody>
@@ -123,23 +125,92 @@ if(!empty($_GET["err"]) && is_numeric($_GET["err"])) {
 </div>
 <div class="columns large-4 medium-4">
 <div class="input group">
-<form id="search">
-	<input type="text" name="searchTerm" maxlength="30" required />
+<div class="callout" id="search">
+	<input type="text" id="searchTerm" maxlength="30" required /><br />
 	<fieldset id="searchTypeGroup" class="callout">
 		<legend>Search By...</legend>
-		<label><input type="radio" name="searchType" value="0" />General Search</label>
-		<label><input type="radio" name="searchType" value="1" />Bill Name</label>
-		<label><input type="radio" name="searchType" value="2" />Owner Name</label>
+		<label><input type="radio" name="searchType" value="0" checked/>Bill Name</label>
+		<label><input type="radio" name="searchType" value="1" />Owner Name</label>
+		<label><input type="radio" name="searchType" value="2" />Group Name</label>
 	</fieldset>
-</form>
+</div>
+<div class="callout">
 <label><input type="checkbox" id="showComplete" checked />Show Complete?</label>
+
+<fieldset id="showPaidGroup" class="callout">
+	<legend>Paid...</legend>
+	<label><input type="radio" name="showPaid" value="0" checked/>Show All</label>
+	<label><input type="radio" name="showPaid" value="1" />Show Paid</label>
+	<label><input type="radio" name="showPaid" value="2" />Show Unpaid</label>
+</fieldset>
+
+<fieldset id="showRecievedGroup" class="callout">
+	<legend>Paid...</legend>
+	<label><input type="radio" name="showRecieved" value="0" checked/>Show All</label>
+	<label><input type="radio" name="showRecieved" value="1" />Show Recieved</label>
+	<label><input type="radio" name="showRecieved" value="2" />Show Not Recieved</label>
+</fieldset>
+
+</div>
 <script>
+function updateSearch() {
+	var search = $("#searchTerm").val();
+	if (search != '') {
+		var searchType = parseInt($("input[name='searchType']:checked").val());
+		var tdCheck = '';
+		switch (searchType) {
+			case 1: tdCheck = '.ownerName';
+			break;
+			case 2: tdCheck = '.groupName';
+			break;
+			default: tdCheck = '.billName';
+		}
+		$("table tbody tr td"+tdCheck+":not(:contains('"+search+"'))").parent().hide("fast");
+		$("table tbody tr td"+tdCheck+":contains('"+search+"')").parent().show("fast");
+	} else {
+		$("table tbody tr").show("fast");
+	}
+}
 $(function() {
 	$("#showComplete").click(function() {
 		var ch = $(this).prop("checked");
 		if (ch) $("input[name='comp'][value='true']").parent().show("fast");
 		else $("input[name='comp'][value='true']").parent().hide("fast");
 	})
+	
+	$("#searchTerm").on("click change keyup",updateSearch);
+	$("input[name='searchType']").change(updateSearch);
+	
+	$("input[name='showPaid']").change(function() {
+		switch (parseInt($(this).val())) {
+			case 0: $("table tbody tr").show("fast");
+			break;
+			case 1: 
+				$("input[name='paid'][value='1']").parent().show("fast");
+				$("input[name='paid'][value='0']").parent().hide("fast");
+			break;
+			case 2: 
+				$("input[name='paid'][value='1']").parent().hide("fast");
+				$("input[name='paid'][value='0']").parent().show("fast");
+			break;
+		}
+	});
+	$("input[name='showRecieved']").change(function() {
+		switch (parseInt($(this).val())) {
+			case 0: $("table tbody tr").show("fast");
+			break;
+			case 1: 
+				$("input[name='recieved'][value='1']").parent().show("fast");
+				$("input[name='recieved'][value='0']").parent().hide("fast");
+			break;
+			case 2: 
+				$("input[name='recieved'][value='1']").parent().hide("fast");
+				$("input[name='recieved'][value='0']").parent().show("fast");
+			break;
+		}
+	});
+	$("input[name='showRecieved']").change(function() {
+	});
 })
 </script>
 </div>
