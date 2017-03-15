@@ -70,7 +70,7 @@ if (empty($uid)) {
 		echo '<input type="number" id="billTotal" step="0.01" min="0.01" required value="'.$billData["total"].'"/>
 					<span id="saveTotal" class="button">Save Total</span>
 					<span id="saveTotalErr" style="display:none"></span>';
-	else echo number_format($billData["total"], 2);
+	else echo number_format($billData["total"], 2, '.', '');
 	echo '</h3>
 			<h3>Due Date: '.$billData["dueTS"].'</h3>
 			<h3>Owner: <a href="profile.php?uid='.$ownerData["userID"].'">'.$ownerData["realname"].'</a></h3>
@@ -82,7 +82,7 @@ if (empty($uid)) {
 				<input type="hidden" id="curBill" value="'.$bid.'" />
 				<input type="hidden" id="editBill" value="'.$editBill.'" />
 				<input type="hidden" id="ownerID" value="'.$ownerData["userID"].'" />
-				Contribution: £<span id="selfCon">'.number_format($billData["ammount"], 2).'</span><br />
+				Contribution: £<span id="selfCon">'.number_format($billData["ammount"], 2, '.', '').'</span><br />
 				Paid: <input type="checkbox" id="selfPaid" ';
 	if ($billData["paid"] != 0) echo 'checked ';
 	if ($billData["recieved"] != 0) echo 'disabled ';
@@ -188,7 +188,7 @@ if (empty($uid)) {
 		}
 		if ($user["paid"] != 0) $paid = "Yes";
 		else $paid = "No";
-		$ammount = number_format($user["ammount"],2);
+		$ammount = number_format($user["ammount"],2,'.','');
 		echo '
 						<tr id="'.$user["userID"].'">
 						<td class="name"><a href="profile.php?uid='.$user["userID"].'">'.$user["realname"].'</a></td><td class="contribution">';
@@ -500,7 +500,7 @@ $(function() {
 		var tableRow = $(this).parent().parent();
 		var targID = tableRow.attr("id");
 		//Mark as recieved and lock
-		
+		tableRow.find("input[name='ammount']").prop("disabled", true);
 		$.post("recievedContribution.php", {bid: bid, uid: targID}, function(d) {
 			console.log(d);
 		});

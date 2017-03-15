@@ -54,12 +54,14 @@
 					<label for="name">Name: </label>
 					<input type="text" name="name" pattern="[a-zA-Z0-9 ]+" maxlength="30" required />
 					<?php if(!empty($_GET) && $_GET["err"] == 2) echo "<div class='callout alert'>Email Already Registered</div>";?><br />
+					<div id="emailCheck" class="alert callout" style="display:none">Email's must match.</div>
 					<label for="email">E-Mail Address: </label>
 					<input type="email" name="email" maxlength="50" required />
 					<label for="emailc">Reconfirm E-Mail Address: </label>
 					<input type="email" name="emailc" maxlength="50" required /><br />
+					<div id="passCheck" class="alert callout" style="display:none">Passwords must match.</div>
 					<label for="pass">Password: </label>
-					<input type="password" name="pass" pattern="[a-zA-Z0-9]+" maxlength="20" required /><br />
+					<input type="password" name="pass" pattern="[a-zA-Z0-9]+" maxlength="20" required />
 					<label for="passc">Reconfirm Password: </label>
 					<input type="password" name="passc" pattern="[a-zA-Z0-9]+" maxlength="20" required /><br />
 					<input type="submit" value="Register" class="button"/>
@@ -74,9 +76,17 @@
 <script>
 $(document).ready(function() {
 	$("#regform").submit(function() {
-		var retVal = $("#regform input[name='email']").val() === $("#regform input[name='emailc']").val();
-		if (retVal) retVal = $("#regform input[name='pass']").val() === $("#regform input[name='passc']").val();
-		return retVal;
+		var emailVal = $("#regform input[name='email']").val() === $("#regform input[name='emailc']").val();
+		if (!emailVal) {
+			$("#emailCheck").show("slow");
+			setTimeout(function(){$("#emailCheck").hide("slow");}, 5000);
+		}
+		var passVal = $("#regform input[name='pass']").val() === $("#regform input[name='passc']").val();
+		if (!passVal) {
+			$("#passCheck").show("slow");
+			setTimeout(function(){$("#passCheck").hide("slow");}, 5000);
+		}
+		return (emailVal && passVal);
 	})
 })
 </script>

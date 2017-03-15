@@ -23,6 +23,7 @@ if ($isLog) {
     <link rel="stylesheet" href="css/foundation.css">
     <link rel="stylesheet" href="css/app.css">
 		<script src="js/jquery-3.1.1.min.js"></script>
+		<script src="js/push.min.js"></script>
   </head>
 </head>
 <body>
@@ -30,7 +31,10 @@ if ($isLog) {
 			<div class="top-bar">
 				<div class="top-bar-left">
 					<ul class="dropdown menu" data-dropdown-menu>
-						<li class="menu-text"><a href="index.php">Cooperatvie Billing Initiative</a></li>
+						<li class="menu-text">
+						<a href="index.php">
+							<img src="images/logo.svg" alt="rip off logo" style="height:50px"/>
+						Cooperatvie Billing Initiative</a></li>
 						<?php if (!$isLog) echo '<li><a href="login.php#login">Login/Register</a></li>';?>
 						<li>
 							<a href="bills.php">Bills</a>
@@ -51,9 +55,25 @@ if ($isLog) {
 				<script>
 				$(function() {
 					var id = $("#seshUser").attr("value");
+					var firstRound = true;
 					function checkNoti() {
 						$.post("getNotifications.php", {uid: id}, function(data, status) {
-								$("#notinumber").html(data);
+								if($("#notinumber").html() != data) {
+									if (!firstRound && $("#notinumber").html() < data) {
+										Push.create("Cooperative Billing Initiative", {
+											body: "You have " + data + " notification(s).",
+											timeout: 3000,
+											icon: "images/logo32.png",
+											onClick: function() {
+												window.focus();
+												window.location.replace("notifications.php");
+												this.close();
+											}
+										});
+									}
+									$("#notinumber").html(data);
+									firstRound = false;
+								}
 							});
 					}
 					checkNoti();
@@ -63,7 +83,7 @@ if ($isLog) {
 				</script>
 				<div class="top-bar-right">
 					<ul class="menu">
-						<li><a href="notifications.php">Notifications (<span id="notinumber"></span>)</a></li>
+						<li><a href="notifications.php">Notifications (<span id="notinumber">0</span>)</a></li>
 						<li><a href="profile.php?uid='.$_SESSION["uid"].'">'.$name.'</a></li>
 						<li><a href="logout.php">Logout</a></li>
 					</ul>

@@ -21,8 +21,9 @@ if (!empty($uid)) {
 	LEFT JOIN bills ON notiBill.billID = bills.billID
 	LEFT JOIN groups ON notiGroup.groupID = groups.groupID
 	LEFT JOIN users ON notiUser.secondUserID = users.userID
-	WHERE addTS > :check ORDER BY addTS");
+	WHERE addTS > :check AND notifications.userID = :uid ORDER BY addTS");
 	$stmt->bindValue(":check", $checkTime, SQLITE3_TEXT);
+	$stmt->bindValue(":uid", $uid, SQLITE3_INTEGER);
 	$result = $stmt->execute();
 	$retArray = array();
 	while($noti = $result->fetchArray()) {
