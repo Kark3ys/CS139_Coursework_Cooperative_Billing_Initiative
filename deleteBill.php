@@ -19,11 +19,8 @@ if (!empty($bid)) {
 		$stmt->bindValue(":bn", $billName, SQLITE3_TEXT);
 		$stmt->execute();
 		$liid = $db->lastInsertRowID();
+		notiLumpBill($db, $liid, $bid);
 	}
-	
-	$stmt = $db->prepare("DELETE FROM bills WHERE billID = :bid");
-	$stmt->bindValue(":bid", $bid, SQLITE3_INTEGER);
-	$stmt->execute();
 	
 	$stmt = $db->prepare("DELETE FROM billContributors WHERE billID = :bid");
 	$stmt->bindValue(":bid", $bid, SQLITE3_INTEGER);

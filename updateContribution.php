@@ -24,6 +24,7 @@ if (!empty($uid)) {
 		$stmt->bindValue(":msg", "New Contribution: £".number_format($ammount, 2), SQLITE3_TEXT);
 		$stmt->execute();
 		$liid = $db->lastInsertRowID();
+		echo $liid;
 		notiLumpBill($db, $liid, $bid);
 	}
 	exit();

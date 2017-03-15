@@ -2,7 +2,7 @@
 require 'database.php';
 require 'security.php';
 $db = new Database();
-$email = h($_POST["email"]);
+$email = strtolower(h($_POST["email"]));
 $pass = h($_POST["pass"]);
 if(!empty($email)) {
 	$stmt = $db->prepare("SELECT * FROM users WHERE email=:email;");

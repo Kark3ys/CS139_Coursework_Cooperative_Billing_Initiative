@@ -1,7 +1,7 @@
 <?php require "header.php";?>
 <?php 
 	if (!empty($_GET["uid"])) $uid = $_GET["uid"];
-	elseif (empty($uid) || !is_int($uid)) {
+	if (empty($uid) || !is_numeric($uid)) {
 		if ($isLog) $uid = $_SESSION["uid"];
 		else $uid = 0;
 	}
@@ -24,7 +24,7 @@
 						Username: '.$userData["username"].'<br />
 					</div>
 				</li>
-				<li class="accordion-item" data-accordion-item>
+				<li class="accordion-item is-active" data-accordion-item>
 					<a href="#" class="accordion-title">Groups</a>
 					<div class="accordion-content" data-tab-content>';
 			

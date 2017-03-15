@@ -24,7 +24,7 @@ Site Layout
 	+bills.php
 	+newBill.php
 	+viewBill.php
-	groups.php
+	+groups.php
 	newGroup.php
 	viewGroup.php
 	notifications.php

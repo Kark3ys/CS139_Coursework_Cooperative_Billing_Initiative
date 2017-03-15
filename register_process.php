@@ -6,7 +6,7 @@ require 'database.php';
 //Removing special cahracters from inputs:
 require "security.php";
 $user = h($_POST["username"]);
-$email = h($_POST["email"]);
+$email = strtolower(h($_POST["email"]));
 $pass = h($_POST["pass"]);
 $name = h($_POST["name"]);
 

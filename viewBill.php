@@ -145,7 +145,7 @@ if (empty($uid)) {
 					echo ' 
 					<hr />					
 					<button class="saveConChanges button">Save Contribution Changes</button><br />
-					<span class="saveConChangeMsg"></span>';
+					<span class="saveConChangeMsg"></span><br />';
 					if ($lgid == 0) echo '
 					Add New Contributors:
 					<div class="addcGen">';
@@ -231,7 +231,7 @@ if (empty($uid)) {
 		echo '
 					<hr />
 					<button class="saveConChanges button">Save Contribution Changes</button><br />
-					<span class="saveConChangeMsg"></span>';
+					<span class="saveConChangeMsg"></span><br />';
 		if ($lgid == 0) echo '
 					Add New Contributors:
 					<div class="addcGen">';
@@ -280,7 +280,7 @@ $(function() {
 	
 	//Check if list deleted.
 	setInterval(function() {
-		$.post("checkBillExists.php", {bid: bid}, function(d) {
+		$.post("checkBillExists.php", {bid: bid, uid: uid}, function(d) {
 			if (d == 0) window.location.replace("bills.php?err=1");
 		});
 	}, 1000);
@@ -404,6 +404,7 @@ $(function() {
 			}
 		});
 		console.log("ready");
+		liCont.find("input[name='ammount']").attr("value", liCont.find("input[name='ammount']").val());
 		changes.forEach(function(item) {
 			console.log("start");
 			if (item) {
@@ -479,7 +480,7 @@ $(function() {
 	});
 	
 	$("#groupCollate ul li div table tbody tr td button[name='remove']").click(function() {
-		var tableRow = $(this).parent().parent()
+		var tableRow = $(this).parent().parent();
 		var targID = tableRow.attr("id");
 		//Remove the user.
 		
@@ -492,6 +493,18 @@ $(function() {
 			tableRow.remove();
 			updateGCT();
 		}, 1000);
+	});
+	
+	$("#groupCollate ul li div table tbody tr td input[name='recieve']").change(function() {
+		$(this).prop("disabled", true);
+		var tableRow = $(this).parent().parent();
+		var targID = tableRow.attr("id");
+		//Mark as recieved and lock
+		
+		$.post("recievedContribution.php", {bid: bid, uid: targID}, function(d) {
+			console.log(d);
+		});
+
 	});
 	
 });

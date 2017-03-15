@@ -26,7 +26,7 @@ if (!empty($username)) {
 			$retArray['already'] = 0;
 			$stmt = $db->prepare("SELECT * FROM notifications
 				INNER JOIN notiBill ON notifications.notiID = notiBill.notiID
-				WHERE userID = :uid AND billID = :bid");
+				WHERE userID = :uid AND billID = :bid AND typeID IN (7, 15)");
 			$stmt->bindValue(":uid", $uid, SQLITE3_INTEGER);
 			$stmt->bindValue(":bid", $bid, SQLITE3_INTEGER);
 			$result = $stmt->execute();

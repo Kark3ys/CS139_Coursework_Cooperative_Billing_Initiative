@@ -8,6 +8,7 @@ if (empty($uid)) {
 <?php include "header.php"; ?>
 <label>Show Read? <input type="checkbox" id="showChecked" checked /></label>
 <table id="notifications" class="unstriped hover">
+<input type="hidden" id="userID" value="<?php echo $uid?>">
 	<thead>
 		<tr>
 			<td>Notification</td>
@@ -93,7 +94,8 @@ if (empty($uid)) {
 			case 7:
 			case 15:
 			case 17:
-				echo 'Accept?<br /><button class="button success notiReply" value="1"'.$dis.'>Yes</button><button class="button alert notiReply" value="0"'.$dis.'>No</button>';
+				echo 'Accept?<br /><button class="button success notiReply" value="1"'.$dis.'>Yes</button>
+				<button class="button alert notiReply" value="0"'.$dis.'>No</button>';
 				break;
 			default:
 				echo '<button class="button markChecked"'.$dis.'>Mark Read</button>';
@@ -111,9 +113,71 @@ function showCheck() {
 	else $("input[name='comp'][value='true']").parent().hide("fast");
 }
 $(function() {
+	var uid = $("#userID").attr("value");
+	var loadTime = Date.now();
+	setInterval(function() {
+		$.post("checkNewNotifications.php", {checkTime: (parseFloat(loadTime)/1000), uid: uid}, function(d) {
+			console.log(d);
+			data = JSON.parse(d);
+			data.forEach(function(noti) {
+				var builtString = '\t\t\t<tr style="display:none" id="'+noti.notiID+'"';
+				if (noti.checked != 0) builtString += ' style="background-color: #cacaca"';
+				builtString += '>\n'
+					+ '\t\t\t<input type="hidden" name="comp" value="'+((noti.checked) ? 'true':'false')+'">\n'
+					+ '\t\t\t<input type="hidden" name="bid" value="'+noti.billID+'">\n'
+					+ '\t\t\t<input type="hidden" name="gid" value="'+noti.groupID+'">\n'
+					+ '\t\t\t<input type="hidden" name="suid" value="'+noti.secondUserID+'">\n'
+					+ '\t\t\t<input type="hidden" name="nType" value="'+noti.typeID+'">\n'
+					+ '\t\t\t<td>'+noti.message+((noti.custmsg) ? '<br />'+noti.custmsg : '')+'</td><td>\n';
+				builtString += '\t\t\tBill: ';
+				if(noti.billID) {
+					builtString += '<a href="viewBill.php?bid='+noti.billID+'">'+noti[1]+'</a>';
+				} else {
+					builtString += 'N/A';
+				}
+				builtString += '<br />\n'
+				+ '\t\t\tGroup: ';
+				
+				if(noti.groupID) {
+					builtString += '<a href="viewGroup.php?bid='+noti.groupID+'">'+noti[2]+'</a>';
+				} else {
+					builtString += 'N/A';
+				}
+				builtString += '<br />\n'
+				+ '\t\t\tUser: ';
+				
+				if(noti.secondUserID) {
+					builtString += '<a href="profile.php?bid='+noti.secondUserID+'">'+noti[0]+'</a>';
+				} else {
+					builtString += 'N/A';
+				}
+				builtString += '</td>\n'
+				+ '\t\t\t<td value="'+noti.typeID+'">\n';
+				switch (noti.typeID) {
+					case 2:
+					case 7:
+					case 15:
+					case 17:
+						builtString +='Accept?<br /><button class="button success notiReply" value="1"'+((noti.checked)?' disabled':'')+'>Yes</button>\n'
+						+ '\t\t\t<button class="button alert notiReply" value="0"'+((noti.checked)?' disabled':'')+'>No</button>\n';
+					break;
+					default:
+						builtString += '<button class="button markChecked"'+((noti.checked)?' disabled':'')+'>Mark Read</button>\n';
+				}
+				builtString += '\t\t\t</td>\n'
+				+ '\t\t\t<td>'+noti.addTS+'</td></tr>\n';
+				
+				$("table tbody").prepend(builtString);
+				$("table tbody tr").show("slow");	
+				loadTime = Date.parse(noti.addTS);
+			});
+			
+		});
+	}, 5000);
+	
 	$("#showChecked").click(showCheck);
 	
-	$(".markChecked").click(function() {
+	$("table").on("click",".markChecked", function() {
 		notiRow = $(this).parent().parent();
 		notiRow.find(".markChecked").prop("disabled", true);
 		notiComp = notiRow.find("input[name='comp']");
@@ -127,7 +191,7 @@ $(function() {
 		}
 	});
 	
-	$(".notiReply").click(function() {
+	$("table").on("click", ".notiReply", function() {
 		nReply = $(this).attr("value");
 		notiRow = $(this).parent().parent();
 		notiRow.find(".notiReply").prop("disabled", true);

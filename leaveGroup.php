@@ -3,22 +3,22 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 require 'database.php';
 require 'generalNotificationFuncs.php';
-$bid = $_POST["bid"];
+$gid = $_POST["gid"];
 $uid = $_POST["uid"];
-$ownerID = $_POST["oid"];
-if (!empty($bid)) {
+$oid = $_POST["oid"];
+if (!empty($gid)) {
 	$db = new Database();
 	
-	$stmt = $db->prepare("INSERT INTO notifications(userID, typeID) VALUES(:oid, 8)");
-	$stmt->bindValue(":oid", $ownerID, SQLITE3_INTEGER);
+	$stmt = $db->prepare("INSERT INTO notifications(userID, typeID) VALUES(:oid, 4)");
+	$stmt->bindValue(":oid", $oid, SQLITE3_INTEGER);
 	$stmt->execute();
 	$liid = $db->lastInsertRowID();
-	notiLumpBill($db, $liid, $bid);
+	notiLumpGroup($db, $liid, $gid);
 	notiLumpUser($db, $liid, $uid);
 	
-	$stmt = $db->prepare("DELETE FROM billContributors 
-		WHERE userID = :uid AND billID = :bid");
-	$stmt->bindValue(":bid", $bid, SQLITE3_INTEGER);
+	$stmt = $db->prepare("DELETE FROM groupUserRel 
+		WHERE userID = :uid AND groupID = :gid");
+	$stmt->bindValue(":gid", $gid, SQLITE3_INTEGER);
 	$stmt->bindValue(":uid", $uid, SQLITE3_INTEGER);
 	$stmt->execute();
 	echo 'Good';
