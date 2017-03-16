@@ -6,7 +6,10 @@ if (empty($uid)) {
 }
 ?>
 <?php include "header.php"; ?>
+<div class="callout">
 <label>Show Read? <input type="checkbox" id="showChecked" checked /></label>
+</div>
+<div class="table-scroll">
 <table id="notifications" class="unstriped hover">
 <input type="hidden" id="userID" value="<?php echo $uid?>">
 	<thead>
@@ -106,6 +109,7 @@ if (empty($uid)) {
 ?>
 	</tbody>
 </table>
+</div>
 <script>
 function showCheck() {
 	var ch = $("#showChecked").prop("checked");
