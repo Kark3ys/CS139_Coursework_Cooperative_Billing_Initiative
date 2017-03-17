@@ -10,7 +10,7 @@ if (empty($uid)) {
 <label>Show Read? <input type="checkbox" id="showChecked" checked /></label>
 </div>
 <div class="table-scroll">
-<table id="notifications" class="unstriped hover">
+<table id="notifications" class="unstriped hover" style="width: 100%">
 <input type="hidden" id="userID" value="<?php echo $uid?>">
 	<thead>
 		<tr>

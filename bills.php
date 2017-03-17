@@ -32,7 +32,7 @@ if(!empty($_GET["err"]) && is_numeric($_GET["err"])) {
 <div class="columns medium-8">
 <div class="callout">
 <div class="table-scroll">
-<table id="bills">
+<table id="bills" style="width: 100%">
 	<thead>
 		<tr>
 			<td>Bill Name</td>

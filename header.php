@@ -25,7 +25,6 @@ if ($isLog) {
 		<script src="js/jquery-3.1.1.min.js"></script>
 		<script src="js/push.min.js"></script>
   </head>
-</head>
 <body>
 		<div class="large-12 columns row">
 			<div class="top-bar">
@@ -59,7 +58,7 @@ if ($isLog) {
 					function checkNoti() {
 						$.post("getNotifications.php", {uid: id}, function(data, status) {
 								if($("#notinumber").html() != data) {
-									if (!firstRound && $("#notinumber").html() < data) {
+									if ($("#notinumber").html() < data) {
 										Push.create("Cooperative Billing Initiative", {
 											body: "You have " + data + " notification(s).",
 											timeout: 3000,
