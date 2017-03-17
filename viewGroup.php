@@ -22,9 +22,16 @@
 				<li class="accordion-item is-active" data-accordion-item>
 					<a href="#" class="accordion-title">'.$groupData["name"].'</a>
 					<div class="accordion-content" data-tab-content>
+						<a id="qrURL"><div id="qr-code"></div></a>
+						<script>
+						$("#qrURL").attr("href", window.location.href);
+						new QRCode(document.getElementById("qr-code"), window.location.href);
+						</script>
 						Name: '.$groupData["name"].'<br />
 						Owner: <a href="profile.php?uid='.$groupData["userID"].'">'.$groupData["realname"].'</a><br />
-						Created: '.$groupData["createTS"].'
+						Created: '.$groupData["createTS"].'<br/>
+						<a href="https://twitter.com/share" class="twitter-share-button" data-size="large" data-text="Join my bill group " data-hashtags="coopBillInitiative" data-show-count="false">Tweet</a><script async src="//platform.twitter.com/widgets.js" charset="utf-8"></script>
+						<script>$(".twitter-share-button").html("Join my bill group " + window.location.href);</script>
 					</div>
 				</li>';
 			echo '

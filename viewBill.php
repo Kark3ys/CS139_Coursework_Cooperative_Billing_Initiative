@@ -78,6 +78,15 @@ if (empty($uid)) {
 			<table><tr><td>Created</td><td>'.$billData["createTS"].'</td></tr>
 			<tr><td>Last Modified</td><td>'.$billData["editTS"].'</td></tr></table>
 			<hr />
+			<a id="qrURL">
+			<div id="qr-code">
+			</div>
+			</a>
+			<script>
+			$("#qrURL").attr("href", window.location.href);
+			new QRCode(document.getElementById("qr-code"), window.location.href);
+			</script>
+			<hr />
 			<div id="controlPanel">
 				<input type="hidden" id="curBill" value="'.$bid.'" />
 				<input type="hidden" id="editBill" value="'.$editBill.'" />

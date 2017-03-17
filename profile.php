@@ -20,6 +20,11 @@
 				<li class="accordion-item is-active" data-accordion-item>
 					<a href="#" class="accordion-title">'.$userData["realname"].'</a>
 					<div class="accordion-content" data-tab-content>
+						<a id="qrURL"><div id="qr-code"></div></a>
+						<script>
+							$("#qrURL").attr("href", "http://cs139.dcs.warwick.ac.uk/~u1600262/cs139/cw/profile.php?uid='.$uid.'");
+							new QRCode(document.getElementById("qr-code"),"http://cs139.dcs.warwick.ac.uk/~u1600262/cs139/cw/profile.php?uid='.$uid.'");
+						</script>
 						Name: <a href="profile.php?uid='.$uid.'">'.$userData["realname"].'</a><br />
 						Username: '.$userData["username"].'<br />
 					</div>

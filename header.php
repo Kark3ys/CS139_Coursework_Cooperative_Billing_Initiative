@@ -20,10 +20,12 @@ if ($isLog) {
     <meta http-equiv="x-ua-compatible" content="ie=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cooperative Billing Initiative</title>
+		<link rel="icon" href="images/logo200.png">
     <link rel="stylesheet" href="css/foundation.css">
     <link rel="stylesheet" href="css/app.css">
 		<script src="js/jquery-3.1.1.min.js"></script>
 		<script src="js/push.min.js"></script>
+		<script src="js/qrcode.min.js"></script>
   </head>
 <body>
 		<div class="large-12 columns row">
